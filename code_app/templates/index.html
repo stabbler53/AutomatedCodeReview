@@ -1,0 +1,348 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Code Guardian - Automated code review system</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="{% static 'lib/font-awesome/css/all.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/bootstrap-icons/font/bootstrap-icons.css' %}" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/lightbox/css/lightbox.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container-xxl bg-white p-0">
+        <!-- Spinner Start -->
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
+
+        <!-- Navbar Start -->
+        <!-- Navbar Start -->
+<div class="container-xxl position-relative p-0">
+    <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
+        <a href="{% url 'index' %}" class="navbar-brand p-0">
+            <h1 class=""><i class=""></i><img src="{% static 'img/logo-removebg-preview.png' %}" alt="Logo">Code<span class="fs-5">Guardian</span></h1>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="fa fa-bars"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto py-0">
+                <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
+                <a href="{% url 'service' %}" class="nav-item nav-link">Code Review</a>
+                <a href="{% url 'project' %}" class="nav-item nav-link">Upload Code</a>
+                <a href="{% url 'chat' %}" class="nav-item nav-link">Code Chat</a>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="{% url 'about' %}" class="dropdown-item">About</a>
+                        <a href="{% url 'team' %}" class="dropdown-item">Our Team</a>
+                        <a href="{% url '404' %}" class="dropdown-item">404 Page</a>
+                        <!--<a href="contact.html" class=dropdown-item">Contact</a> !-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+<!-- Navbar End -->
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+            </nav>
+
+            <div class="container-xxl py-5 bg-primary hero-header mb-5">
+                <div class="container my-5 py-5 px-lg-5">
+                    <div class="row g-5">
+                        <div class="col-lg-6 text-center text-lg-start">
+                            <h1 class="text-white mb-4 animated zoomIn">Let's navigate the world of coding together, with Code Guardian by your side</h1>
+                            <p class="text-white pb-3 animated zoomIn">Code Guardian is a tool that enhances code review, ensuring top-tier software development. Leveraging code analysis and machine learning (LLMs), it pinpoints coding issues, offers context-aware suggestions, and aligns with coding standards. Seamlessly integrated with version control systems, it provides timely feedback, helping developers spot and rectify issues early in the process</p>
+                            <a href="{% url 'service' %}" class="btn btn-light py-sm-3 px-sm-5 rounded-pill me-3 animated slideInLeft">Code Review</a>
+                            <a href="{% url 'project' %}" class="btn btn-outline-light py-sm-3 px-sm-5 rounded-pill animated slideInRight">Upload Code</a>
+                            <!-- <a href="chat.html" class="btn btn-outline-light py-sm-3 px-sm-5 rounded-pill animated slideInRight">Code Chat</a> -->
+                        </div>
+                        <div class="col-lg-6 text-center text-lg-start">
+                        <img class="img-fluid" src="{% static 'img/LogoBigg.png' %}" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Navbar -->
+
+
+        <!-- Full Screen Search Start -->
+        <div class="modal fade" id="searchModal" tabindex="-1">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content" style="background: rgba(11, 58, 97, 0.7);">
+                    <div class="modal-header border-0">
+                        <button type="button" class="btn bg-white btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body d-flex align-items-center justify-content-center">
+                        <div class="input-group" style="max-width: 600px;">
+                            <input type="text" class="form-control bg-transparent border-light p-3" placeholder="Type search keyword">
+                            <button class="btn btn-light px-4"><i class="bi bi-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Full Screen Search End -->
+
+
+        <!-- About Start -->
+        <div class="container-xxl py-5">
+            <div class="container px-lg-5">
+                <div class="row g-5">
+                    <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="section-title position-relative mb-4 pb-2">
+                            <h6 class="position-relative d-inline text-primary ps-4">About Code Guardian</h6>
+                            <h2 class="mt-2">The best solution for enhancing coding efficiency and quality</h2>
+                        </div>
+                        <p class="mb-4">Code Guardian is a comprehensive program designed to enhance coding efficiency and quality. It offers quick feedback on code performance, helping both novice and experienced programmers. Thetool is particularly useful for identifying errors and issues before code is released, thereby reducing the need for extensive later fixes.</p>
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <h6 class="mb-3"><i class="fa fa-check text-primary me-2"></i>Free Access</h6>
+                                <h6 class="mb-0"><i class="fa fa-check text-primary me-2"></i>Integration with Popular Tools</h6>
+                            </div>
+                            <div class="col-sm-6">
+                                <h6 class="mb-3"><i class="fa fa-check text-primary me-2"></i>Real-time Feedback</h6>
+                                <h6 class="mb-0"><i class="fa fa-check text-primary me-2"></i>Continuous Improvement</h6>
+                            </div>
+                        </div>
+                       
+                    </div>
+                    <div class="col-lg-6">
+                        <img class="img-fluid wow zoomIn" data-wow-delay="0.5s" src="{% static 'img/about.jpg' %}" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- About End -->
+
+
+        <!-- Newsletter Start -->
+        <div class="container-xxl bg-primary newsletter my-5 wow fadeInUp" data-wow-delay="0.1s">
+            <div class="container px-lg-5">
+                <div class="row align-items-center" style="height: 250px;">
+                    <div class="col-12 col-md-6">
+                        <!--<h3 class="text-white">Ready to get started</h3> -->
+                    </div>
+                    <div class="col-md-6 text-center mb-n5 d-none d-md-block">
+                    <!--<img class="img-fluid mt-5" style="height: 250px;" src="{% static 'img/newsletter.png' %}">-->
+                </div>
+                </div>
+            </div>
+        </div>
+        <!-- Newsletter End -->
+
+
+        <!-- Code Review Start -->
+        <div class="container-xxl py-5">
+            <div class="container px-lg-5">
+                <div class="section-title position-relative text-center mb-5 pb-2 wow fadeInUp" data-wow-delay="0.1s">
+                    <h6 class="position-relative d-inline text-primary ps-4">Code Review</h6>
+                    <h2 class="mt-2">What Solutions We Provide</h2>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.1s">
+                        <div class="service-item d-flex flex-column justify-content-center text-center rounded">
+                            <div class="service-icon flex-shrink-0">
+                                <i class="fa fa-code fa-2x"></i>
+                            </div>
+                            <h5 class="mb-3">Automated Code Review</h5>
+                            <p>Ensures top-tier software development by pinpointing coding issues, offering context-aware suggestions, and aligning with coding standards.</p>
+                            <!--<a class="btn px-3 mt-auto mx-auto" href="">Read More</a> -->
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.3s">
+                        <div class="service-item d-flex flex-column justify-content-center text-center rounded">
+                            <div class="service-icon flex-shrink-0">
+                                <<i class="fa fa-code-branch fa-2x"></i>
+                            </div>
+                            <h5 class="mb-3">Integration with Version Control Systems</h5>
+<p>Seamlessly integrates with systems like Git, providing timely feedback to help developers spot and rectify issues early in the process.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.6s">
+                        <div class="service-item d-flex flex-column justify-content-center text-center rounded">
+                            <div class="service-icon flex-shrink-0">
+                                <i class="fa fa-terminal fa-2x"></i>
+                            </div>
+                            <h5 class="mb-3">Real-Time Access to Knowledge Bases</h5>
+                            <p>Connects with GitHub and Stack Overflow, granting real-time access to vast knowledge bases, which aids developers in seeking explanations, asking questions, and receiving guidance.</p>  
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.1s">
+                        <div class="service-item d-flex flex-column justify-content-center text-center rounded">
+                            <div class="service-icon flex-shrink-0">
+                                <i class="fa fa-server fa-2x"></i>
+                            </div>
+                            <h5 class="mb-3">Enhanced Learning Through LLM Integration</h5>
+                            <p> Utilizes large language models (LLMs) to provide developers with explanations and guidance, fostering a culture of continuous learning.</p> 
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.3s">
+                        <div class="service-item d-flex flex-column justify-content-center text-center rounded">
+                            <div class="service-icon flex-shrink-0">
+                                <i class="fa fa-bug fa-2x"></i>
+                            </div>
+                            <h5 class="mb-3">Security and Quality Assurance</h5>
+                            <p>Highlights key words, shows errors and danger signals, looks for security problems, and ensures the code follows established guidelines.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.6s">
+                        <div class="service-item d-flex flex-column justify-content-center text-center rounded">
+                            <div class="service-icon flex-shrink-0">
+                                <i class="fa fa-database fa-2x"></i>
+                            </div>
+                            <h5 class="mb-3">Efficiency in Code Review Process</h5>
+                            <p>Reduces developers' workload by spotting mistakes and errors in the code before release, and can be easily added to popular development environments like Visual Studio Code, IntelliJ, and GitHub.</p>  
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Service End -->
+
+        <!-- Testimonial Start -->
+        <div class="container-xxl bg-primary testimonial py-5 my-5 wow fadeInUp" data-wow-delay="0.1s">
+            <div class="container py-5 px-lg-5">
+                <div class="owl-carousel testimonial-carousel">
+                </div>
+            </div>
+        </div>
+        <!-- Testimonial End -->
+
+
+        <!-- Team Start -->
+        <div class="container-xxl py-5">
+            <div class="container px-lg-5">
+                <div class="section-title position-relative text-center mb-5 pb-2 wow fadeInUp" data-wow-delay="0.1s">
+                    <h6 class="position-relative d-inline text-primary ps-4">Our Team</h6>
+                    <h2 class="mt-2">Meet Our Team Members</h2>
+                </div>
+               <div class="row g-4">
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="team-item">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 d-flex flex-column align-items-center mt-4 pt-5" style="width: 75px;">
+                                    <!--<a class="btn btn-square text-primary bg-white my-1" href=""><i class="fab fa-facebook-f"></i></a>
+                                    <a class="btn btn-square text-primary bg-white my-1" href=""><i class="fab fa-twitter"></i></a>
+                                    <a class="btn btn-square text-primary bg-white my-1" href=""><i class="fab fa-instagram"></i></a>-->
+                                    <a class="btn btn-square text-primary bg-white my-1" href="https://www.linkedin.com/in/mohamedrashad1999/"><i class="fab fa-linkedin-in"></i></a>
+                                </div>
+                                <img class="img-fluid rounded w-100" src="{% static 'img/team-1.jpg' %}" alt="">
+                            </div>
+                            <div class="px-4 py-3">
+                                <h5 class="fw-bold m-0">Mohamed Rashad</h5>
+                                <small>Developer</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="team-item">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 d-flex flex-column align-items-center mt-4 pt-5" style="width: 75px;">
+                                    <!--<a class="btn btn-square text-primary bg-white my-1" href=""><i class="fab fa-facebook-f"></i></a>
+                                    <a class="btn btn-square text-primary bg-white my-1" href=""><i class="fab fa-twitter"></i></a>
+                                    <a class="btn btn-square text-primary bg-white my-1" href=""><i class="fab fa-instagram"></i></a>-->
+                                    <a class="btn btn-square text-primary bg-white my-1" href="https://www.linkedin.com/in/miad-wan-mahri/"><i class="fab fa-linkedin-in"></i></a>
+                                </div>
+                                <img class="img-fluid rounded w-100" src="{% static 'img/team-2.jpg' %}" alt="">
+                            </div>
+                            <div class="px-4 py-3">
+                                <h5 class="fw-bold m-0">Miad Wan Mahri</h5>
+                                <small>Developer</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.6s">
+                        <div class="team-item">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 d-flex flex-column align-items-center mt-4 pt-5" style="width: 75px;">
+                                    <!--<a class="btn btn-square text-primary bg-white my-1" href=""><i class="fab fa-facebook-f"></i></a>
+                                    <a class="btn btn-square text-primary bg-white my-1" href=""><i class="fab fa-twitter"></i></a>
+                                    <a class="btn btn-square text-primary bg-white my-1" href=""><i class="fab fa-instagram"></i></a>--><a class="btn btn-square text-primary bg-white my-1" href="https://www.linkedin.com/in/sharyarwani/"><i class="fab fa-linkedin-in"></i></a>
+                                </div>
+                                <img class="img-fluid rounded w-100" src="{% static 'img/team-3.jpg' %}" alt="">
+                            </div>
+                            <div class="px-4 py-3">
+                                <h5 class="fw-bold m-0">Dr.Sharyar Wani</h5>
+                                <small>SUPERVISOR</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Team End -->
+
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-primary text-light footer mt-5 pt-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-5 px-lg-5">
+            <div class="row g-5">
+        </div>
+        <div class="container px-lg-5">
+            <div class="copyright">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        &copy; <a class="border-bottom" href="#">Code Guardian 2024</a> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top pt-2"><i class="bi bi-arrow-up"></i></a>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="{% static 'lib/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'lib/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'lib/isotope/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'lib/lightbox/js/lightbox.min.js' %}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>
