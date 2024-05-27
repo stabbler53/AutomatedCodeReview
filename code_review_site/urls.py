@@ -33,9 +33,7 @@ urlpatterns = [
     path('analyze_code/', views.analyze_code, name='code_analysis'),
     path('about/', views.about, name='about'),
     path('chat/', views.chat, name='chat'),
-    path('project/', views.project, name='project'),
     path('team/', views.team, name='team'),
-    path('404/', views.not_found_404, name='404'),
     path('analyze/', views.analyze_code_view, name='analyze'),
     path('admin/', admin.site.urls),
 ]
