@@ -31,24 +31,23 @@
 
     <!-- Template Stylesheet -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background-color: #f2f2f2; 
+        }
+    </style>
 </head>
 
 <body>
     <div class="container-xxl bg-white p-0">
-        <!-- Spinner Start -->
-        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-        <!-- Spinner End -->
-
 
         <!-- Navbar & Hero Start -->
         <div class="container-xxl position-relative p-0">
             <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
                 <a href="{% url 'index' %}" class="navbar-brand p-0">
-                    <h1 class=""><i class=""></i><img src="{% static 'img/logo-removebg-preview.png' %}" alt="Logo">Code<span class="fs-5">Guardian</span></h1>
+                    <h1 class="m-0"><img src="{% static 'img/logo-removebg-preview.png' %}" alt="Logo" class="me-2">Code<span class="text-primary">Guardian</span></h1>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                     <span class="fa fa-bars"></span>
@@ -57,14 +56,12 @@
                     <div class="navbar-nav ms-auto py-0">
                         <a href="{% url 'index' %}" class="nav-item nav-link">Home</a>
                         <a href="{% url 'service' %}" class="nav-item nav-link">Code Review</a>
-                        <a href="{% url 'project' %}" class="nav-item nav-link">Upload Code</a>
                         <a href="{% url 'chat' %}" class="nav-item nav-link active">Code Chat</a>
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                             <div class="dropdown-menu m-0">
                                 <a href="{% url 'about' %}" class="dropdown-item">About</a>
                                 <a href="{% url 'team' %}" class="dropdown-item">Our Team</a>
-                                <a href="{% url '404' %}" class="dropdown-item">404 Page</a>
                             </div>
                         </div>
                     </div>    
@@ -72,93 +69,107 @@
             </nav>
 
             <div class="container-xxl py-5 bg-primary hero-header mb-5">
-                <div class="container my-5 py-5 px-lg-5">
-                    <div class="row g-5 py-5">
-                        <div class="col-12 text-center">
-                            <h1 class="text-white animated zoomIn">Start chatting with your code</h1>
-                            <hr class="bg-white mx-auto mt-0" style="width: 90px;">
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb justify-content-center p-0">
-                                    <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-white">Home</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Chat</li>
-                                </ol>
-                            </nav>
-                        </div>
+                <div class="row g-5 py-5">
+                   <br><h2 class="text-white animated zoomIn">Start chatting with your code</h2></br>
+                    <div class="col-12 text-center">
+                        <hr class="bg-white mx-auto mt-0" style="width: 90px;">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb justify-content-center">
+                                <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-white">Home</a></li>
+                                <li class="breadcrumb-item text-white active" aria-current="page">Code Chat</li>
+                            </ol>
+                        </nav>
                     </div>
                 </div>
             </div>
         </div>
         <!-- Navbar & Hero End -->
+
+        <div class="container my-5">
+            <h1 class="text-center mb-4">Chat</h1>
+            <div class="card shadow-sm p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    {% if response %}
+                        <div class="alert alert-success">
+                            <h4 class="alert-heading">Response:</h4>
+                            <p>{{ response }}</p>
+                        </div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <label for="prompt" class="form-label">Enter your coding question:</label>
+                        <textarea name="prompt" id="prompt" class="form-control" rows="6">{{ prompt }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Submit</button>
+                    <div class="loading mt-3 mx-auto"></div>
+                </form>
+            </div>
+        </div>
+
         <style>
-            textarea {
-                width: 100%;
-                height: 200px;
-                padding: 10px;
-                font-size: 16px;
+            .loading {
+                display: none;
+                border: 4px solid #f3f3f3;
+                border-top: 4px solid #3498db;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                animation: spin 2s linear infinite;
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
             }
         </style>
-        <h1>Chat</h1>
-        <form method="post">
-            {% csrf_token %}
-            {% if response %}
-                <h2>Response:</h2>
-                <p>{{ response }}</p>
-            {% endif %}
-            <label for="prompt">Enter your prompt:</label>
-            <textarea name="prompt" id="prompt">{{ prompt }}</textarea>
-            <br>
-            <input type="submit" value="Submit">
-        </form>
-    
+        
+        <script>
+            document.querySelector('form').addEventListener('submit', function() {
+                document.querySelector('.loading').style.display = 'inline-block';
+            });
+        </script>
+        
         <!-- Footer Start -->
         <div class="container-xxl py-5">
-            <footer class="bg-primary text-white">
+            <footer class="bg-dark text-light">
                 <div class="container py-5">
                     <div class="row g-5">
                         <div class="col-md-6 col-lg-4">
-                            <h2 class="fw-bold mb-4">Code Guardian</h2>
-                            <p>The most efficient and effective tool to find security flaws in your code</p>
+                            <h2 class="fw-bold mb-4 text-light">Code Guardian</h2>
+                            <p>The most efficient and effective tool to find security flaws in your code.</p>
+                            <div class="d-flex pt-2">
+                                <a class="btn btn-lg btn-light btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-twitter"></i></a>
+                                <a class="btn btn-lg btn-light btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a class="btn btn-lg btn-light btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a class="btn btn-lg btn-light btn-lg-square rounded-circle" href="#"><i class="fab fa-instagram"></i></a>
+                            </div>
                         </div>
                         <div class="col-md-6 col-lg-4">
-                            <h2 class="fw-bold mb-4">Links</h2>
+                            <h2 class="fw-bold mb-4 text-light">Links</h2>
                             <ul class="list-unstyled">
-                                <li><a href="{% url 'index' %}">Home</a></li>
-                                <li><a href="{% url 'service' %}">Code Review</a></li>
-                                <li><a href="{% url 'project' %}">Upload Code</a></li>
-                                <li><a href="{% url 'chat' %}">Code Chat</a></li>
-                                <li><a href="{% url 'about' %}">About</a></li>
-                                <li><a href="{% url 'team' %}">Our Team</a></li>
-                                <li><a href="{% url '404' %}">404 Page</a></li>
+                                <li><a href="{% url 'index' %}" class="text-light">Home</a></li>
+                                <li><a href="{% url 'service' %}" class="text-light">Code Review</a></li>
+                                <li><a href="{% url 'chat' %}" class="text-light">Code Chat</a></li>
+                                <li><a href="{% url 'about' %}" class="text-light">About</a></li>
+                                <li><a href="{% url 'team' %}" class="text-light">Our Team</a></li>
                             </ul>
                         </div>
                         <div class="col-md-6 col-lg-4">
-                            <h2 class="fw-bold mb-4">Contact</h2>
-                            <p><i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA</p>
-                            <p><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
-                            <p><i class="fa fa-envelope me-3"></i>info@example.com</p>
-                            <h2 class="fw-bold mb-4">Follow Us</h2>
-                            <div class="d-flex">
-                                <a class="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-twitter fw-normal"></i></a>
-                                <a class="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-facebook-f fw-normal"></i></a>
-                                <a class="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-linkedin-in fw-normal"></i></a>
-                                <a class="btn btn-lg btn-primary btn-lg-square rounded-circle" href="#"><i class="fab fa-instagram fw-normal"></i></a>
-                            </div>
+                            <h2 class="fw-bold mb-4 text-light">Contact</h2>
+                            <p><i class="fa fa-map-marker-alt me-3"></i>Uia, Gombak, Malaysia</p>
+                            <p><i class="fa fa-phone-alt me-3"></i>01139977924</p>
+                            <p><i class="fa fa-envelope me-3"></i>mamr8844@gmail.com</p>
                         </div>
                     </div>
                 </div>
                 <div class="container">
-                    <div class="copyright">
-                        <div class="row">
-                            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                                &copy; <a class="border-bottom" href="#">Code Guardian 2024</a>
-                            </div>
-                        </div>
+                    <div class="copyright text-center text-light">
+                        &copy; <a class="border-bottom text-light" href="#">Code Guardian 2024</a>
                     </div>
                 </div>
             </footer>
         </div>
         <!-- Footer End -->
-
 
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top pt-2"><i class="bi bi-arrow-up"></i></a>
@@ -177,3 +188,4 @@
 </body>
 
 </html>
+    

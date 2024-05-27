@@ -4,10 +4,10 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Code Guardian - Automated code review system</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
+    
 
     <!-- Favicon -->
     <link href="{% static 'img/favicon.ico' %}" rel="icon">
@@ -35,9 +35,10 @@
 
 <body>
     <div class="container-xxl bg-white p-0">
+        
         <!-- Spinner Start -->
         <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <div class="spinner-grow text-primary" style="width: 20rem; height: 3rem;" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
         </div>
@@ -56,21 +57,23 @@
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto py-0">
                         <a href="{% url 'index' %}" class="nav-item nav-link">Home</a>
-                        <a href="{% url 'service' %}" class="nav-item nav-link active">Code Review</a>
-                        <a href="{% url 'project' %}" class="nav-item nav-link">Upload</a>
+                        <a href="{% url 'service' %}" class="nav-item nav-link active">Code Review</a>  
                         <a href="{% url 'chat' %}" class="nav-item nav-link">Code Chat</a>
-                        <a href="{% url 'about' %}" class="nav-item nav-link">About</a>
-                        
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
+                            <div class="dropdown-menu m-0">
+                                <a href="{% url 'about' %}" class="dropdown-item">About</a>
+                                <a href="{% url 'team' %}" class="dropdown-item">Our Team</a>
                     </div>
                 </div>
             </nav>
 
             <!-- Hero Start -->
-            <div class="bg-primary p-5 mt-5">
+            <div class="bg-primary p-5 mt-8">
                 <div class="container-xxl p-0">
-                    <h1 class="text-white mb-4">Automated Code Review System</h1>
+                    <br><h2 class="text-white mb-4">Automated Code Review System</h2></br>
                     <p class="text-white-50 mb-4">We are an automated code review system that checks your code quality for free.</p>
-                    <a href="{% url 'project' %}" class="btn btn-light px-4">Upload your project</a>
+                    <a href="{% url 'chat' %}" class="btn btn-light px-4">Chat with your code with CodeQwen-7B-chat model</a>
                 </div>
             </div>
             <!-- Hero End -->
@@ -196,8 +199,8 @@
                     <div class="d-flex align-items-center">
                         <img class="img-fluid rounded-circle" src="{% static 'img/testimonial-1.jpg' %}" style="width: 50px; height: 50px;">
                         <div class="ms-3">
-                            <h5 class="mb-1">Miad binti wan mahri</h5>
-                            <p class="text-muted">Web Developer</p>
+                            <h5 class="mb-1">Mohamed Rashad</h5>
+                            <p class="text-muted">Data Science</p>
                         </div>
                     </div>
                 </div>
@@ -207,8 +210,8 @@
                     <div class="d-flex align-items-center">
                         <img class="img-fluid rounded-circle" src="{% static 'img/testimonial-2.jpg' %}" style="width: 50px; height: 50px;">
                         <div class="ms-3">
-                            <h5 class="mb-1">Mohamed Rashad</h5>
-                            <p class="text-muted">Data Science</p>
+                            <h5 class="mb-1">Miad binti wan mahri</h5>
+                            <p class="text-muted">Web Developer</p>
                         </div>
                     </div>
                 </div>
