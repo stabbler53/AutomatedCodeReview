@@ -10,6 +10,14 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 from torch.cuda.amp import autocast
 
+# Load model and tokenizer outside of the view function
+device = "cuda" if torch.cuda.is_available() else "cpu"
+model = AutoModelForCausalLM.from_pretrained(
+    "Qwen/Qwen1.5-0.5B-Chat",
+    torch_dtype="auto",
+    device_map="auto"
+).eval().to(device)
+tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-0.5B-Chat")
 
 def index(request):
     return render(request, 'index.html')
@@ -71,16 +79,6 @@ def about(request):
 def chat(request):
     if request.method == 'POST':
         prompt = request.POST.get('prompt')
-        device = "cuda" if torch.cuda.is_available() else "cpu"
-        
-        # Load model and tokenizer
-        model = AutoModelForCausalLM.from_pretrained(
-            "Qwen/Qwen1.5-0.5B-Chat",
-            torch_dtype="auto",
-            device_map="auto"
-        ).eval().to(device)
-        model.gradient_checkpointing_enable()
-        tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-0.5B-Chat")
         
         # Prepare input
         messages = [
