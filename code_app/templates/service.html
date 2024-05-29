@@ -7,14 +7,14 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
-    
+
     <!-- Favicon -->
     <link href="{% static 'img/favicon.ico' %}" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -30,7 +30,7 @@
 
     <!-- Template Stylesheet -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
-    
+
     <style>
         body, html {
             padding: 0;
@@ -48,7 +48,7 @@
 
 <body>
     <div class="container-xxl bg-white p-0">
-        
+
         <!-- Spinner Start -->
         <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-grow text-primary" style="width: 15rem; height: 5rem;" role="status">
@@ -69,7 +69,7 @@
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto py-0">
                         <a href="{% url 'index' %}" class="nav-item nav-link">Home</a>
-                        <a href="{% url 'service' %}" class="nav-item nav-link active">Code Review</a>  
+                        <a href="{% url 'service' %}" class="nav-item nav-link active">Code Review</a>
                         <a href="{% url 'chat' %}" class="nav-item nav-link">Code Chat</a>
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
@@ -85,14 +85,15 @@
             <!-- Hero Start -->
             <div class="bg-primary p-5 mt-8">
                 <div class="container-xxl p-0">
-                  <br> <h2 class="text-white mb-4">Automated Code Review System</h2> </br>
-                   <p class="text-white-50 mb-4">We are an automated code review system that checks your code quality for free.</p>
+                    <br><h2 class="text-white mb-4">Automated Code Review System</h2></br>
+                    <p class="text-white-50 mb-4">We are an automated code review system that checks your code quality for free.</p>
                     <a href="{% url 'chat' %}" class="btn btn-light px-4">Chat with your code with CodeQwen-7B-chat model</a>
                 </div>
             </div>
             <!-- Hero End -->
         </div>
         <!-- Navbar & Hero End -->
+
         <div class="container my-5 p-4 shadow rounded">
             <h2 class="text-center mb-4">Analyze Code</h2>
             <form method="post" action="{% url 'analyze' %}" class="needs-validation" enctype="multipart/form-data" novalidate>
@@ -114,7 +115,7 @@
                 <button type="submit" class="btn btn-primary mt-3">Analyze Code</button>
             </form>
         </div>
-        
+
         <div class="container my-5 p-4 shadow rounded">
             <h2 class="text-center mb-4">Analysis Results</h2>
             {% if findings %}
@@ -180,7 +181,7 @@
                 <div class="col-lg-4">
                     <div class="bg-light rounded p-4">
                         <div class="d-flex mb-3">
-                            <i class="bi bi-bar-chart-steps fs-2 text-primary"></i>
+                            <i class="bi bi-bar-chart-steps fs-2                             text-primary"></i>
                             <div class="ms-3">
                                 <h5 class="mb-1">Code Performance Analysis</h5>
                                 <p class="text-muted mb-0">Our code review system analyzes the performance of your code by checking for bottlenecks and slow operations.</p>
@@ -217,7 +218,7 @@
                         <img class="img-fluid rounded-circle" src="{% static 'img/testimonial-1.jpg' %}" style="width: 50px; height: 50px;">
                         <div class="ms-3">
                             <h5 class="mb-1">Mohamed Rashad</h5>
-                            <p class="text-muted">Data Science</p>
+                            <p class="text-muted">Data Scientist</p>
                         </div>
                     </div>
                 </div>
@@ -227,7 +228,7 @@
                     <div class="d-flex align-items-center">
                         <img class="img-fluid rounded-circle" src="{% static 'img/testimonial-2.jpg' %}" style="width: 50px; height: 50px;">
                         <div class="ms-3">
-                            <h5 class="mb-1">Miad binti wan mahri</h5>
+                            <h5 class="mb-1">Miad binti Wan Mahri</h5>
                             <p class="text-muted">Web Developer</p>
                         </div>
                     </div>
@@ -241,7 +242,7 @@
             <div class="container py-5 px-lg-5">
                 <div class="row g-5">
                     <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        &copy; <a class="border-bottom" href="{% url 'index' %}">Code Guardian 2024</a> 
+                        &copy; <a class="border-bottom" href="{% url 'index' %}">Code Guardian 2024</a>
                     </div>
                 </div>
             </div>
@@ -251,6 +252,7 @@
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top pt-2"><i class="bi bi-arrow-up"></i></a>
     </div>
+
     <script>
         function handleFileSelect(event) {
             const file = event.target.files[0];
@@ -271,7 +273,7 @@
     </script>
 
     <!-- JavaScript Libraries -->
-    <script src="{% static 'lib/jquery/jquery.min.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{% static 'lib/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'lib/wow/wow.min.js' %}"></script>
     <script src="{% static 'lib/easing/easing.min.js' %}"></script>
@@ -284,34 +286,40 @@
     <script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'js/code_analysis.js' %}"></script>
     <script>
-        (function() {
-            'use strict';
-            window.addEventListener('load', function() {
-                var forms = document.getElementsByClassName('needs-validation');
-                var validation = Array.prototype.filter.call(forms, function(form) {
-                    form.addEventListener('submit', function(event) {
-                        if (form.checkValidity() === false) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-                        form.classList.add('was-validated');
-                    }, false);
+        $(document).ready(function() {
+            // Fade out the spinner after the page is loaded
+            $('#spinner').fadeOut('slow');
+
+            (function() {
+                'use strict';
+                window.addEventListener('load', function() {
+                    var forms = document.getElementsByClassName('needs-validation');
+                    var validation = Array.prototype.filter.call(forms, function(form) {
+                        form.addEventListener('submit', function(event) {
+                            if (form.checkValidity() === false) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                            }
+                            form.classList.add('was-validated');
+                        }, false);
+                    });
+                }, false);
+
+                // Disable one input when the other is filled
+                var codeInput = document.getElementById('code');
+                var fileInput = document.getElementById('file');
+
+                codeInput.addEventListener('input', function() {
+                    fileInput.disabled = !!codeInput.value;
                 });
-            }, false);
-            
-            // Disable one input when the other is filled
-            var codeInput = document.getElementById('code');
-            var fileInput = document.getElementById('file');
-            
-            codeInput.addEventListener('input', function() {
-                fileInput.disabled = !!codeInput.value;
-            });
-            
-            fileInput.addEventListener('input', function() {
-                codeInput.disabled = !!fileInput.value;
-            });
-        })();
+
+                fileInput.addEventListener('input', function() {
+                    codeInput.disabled = !!fileInput.value;
+                });
+            })();
+        });
     </script>
 </body>
 
 </html>
+

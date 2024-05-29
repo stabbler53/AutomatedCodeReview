@@ -125,18 +125,21 @@
         padding-bottom: 0.2rem;
         color: #ffffff; /* Adjust this value as needed */
     }
-            body {
-                background-image: url("{% static 'img/coding.jpg' %}");
-                background-size: 100%;
-                background-repeat: repeat-y;
-                background-attachment: fixed;
-                height: 100%;
-                width: 100%;
-                margin: 0;
-                padding: 0;
-                overflow-x: hidden;
-                background-color: #f2f2f2;
-            }
+    body {
+            background-image: url("{% static 'img/coding.jpg' %}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        .hero-header {
+            /* Remove background color to see the blurred background */
+            background-color: transparent !important;
+        }
     
             .container-xxl {
                 max-width: 100%;
@@ -222,8 +225,8 @@
     <script src="{% static 'lib/easing/easing.min.js' %}"></script>
     <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
     <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'lib/isotope/isotope.pkgd.min.js' %}"></script>
     <script src="{% static 'lib/lightbox/js/lightbox.min.js' %}"></script>
-
     <!-- Template Javascript -->
     <script src="{% static 'js/main.js' %}"></script>
 </body>
