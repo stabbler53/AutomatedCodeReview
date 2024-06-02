@@ -1,14 +1,16 @@
+import logging
+import os
+import torch
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-from .code_analysis import analyze_code, evaluate_code_quality, provide_feedback
 from django.http import JsonResponse
-import os
-import logging
+from .code_analysis import analyze_code, evaluate_code_quality, provide_feedback
 from transformers import AutoModelForCausalLM, AutoTokenizer
-import torch
-from torch.cuda.amp import autocast
+
+# Configure logging
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s %(levelname)s:%(message)s')
 
 # Load model and tokenizer outside of the view function
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -19,9 +21,50 @@ model = AutoModelForCausalLM.from_pretrained(
 ).eval().to(device)
 tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-0.5B-Chat")
 
+def handle_uploaded_file(uploaded_file):
+    file_path = default_storage.save(uploaded_file.name, ContentFile(uploaded_file.read()))
+    file_full_path = os.path.join(default_storage.location, file_path)
+    try:
+        with open(file_full_path, 'r') as file:
+            code = file.read()
+    except Exception as e:
+        logging.error(f"Error reading uploaded file: {e}")
+        raise
+    finally:
+        try:
+            default_storage.delete(file_path)
+        except Exception as e:
+            logging.error(f"Error deleting file: {e}")
+    return code
+
+def get_model_response(prompt):
+    try:
+        messages = [
+            {"role": "system", "content": "You are a helpful assistant integrated into a site called CodeGuardian which helps users reviewing their code."},
+            {"role": "user", "content": prompt}
+        ]
+        text = tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True
+        )
+        model_inputs = tokenizer([text], return_tensors="pt").to(device)  # Move input tensors to the same device as the model
+        with torch.cuda.amp.autocast():
+            generated_ids = model.generate(
+                model_inputs.input_ids,
+                max_new_tokens=512
+            )
+        generated_ids = [
+            output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
+        ]
+        response = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
+        return response
+    except Exception as e:
+        logging.error(f"Error generating model response: {e}")
+        return "An error occurred while generating the response."
+
 def index(request):
     return render(request, 'index.html')
-
 
 def analyze_code_view(request):
     findings = []
@@ -37,19 +80,10 @@ def analyze_code_view(request):
         uploaded_file = request.FILES.get('file')
         
         if uploaded_file:
-            # Save the uploaded file
-            file_path = default_storage.save(uploaded_file.name, ContentFile(uploaded_file.read()))
-            file_full_path = os.path.join(default_storage.location, file_path)
-            
             try:
-                with open(file_full_path, 'r') as file:
-                    code = file.read()
-            except Exception as e:
-                logging.error(f"Error reading uploaded file: {e}")
+                code = handle_uploaded_file(uploaded_file)
+            except Exception:
                 return render(request, 'service.html', {'error': 'Error reading uploaded file.'})
-            finally:
-                # Delete the file after reading it
-                default_storage.delete(file_path)
         
         if code:
             try:
@@ -70,41 +104,13 @@ def analyze_code_view(request):
     
     return render(request, 'service.html', context)
 
-
 def about(request):
-    """ Renders the about template """
     return render(request, 'about.html')
-
 
 def chat(request):
     if request.method == 'POST':
         prompt = request.POST.get('prompt')
-        
-        # Prepare input
-        messages = [
-            {"role": "system", "content": "You are a helpful assistant integrated into a site called CodeGuardian which helps users reviewing their code."},
-            {"role": "user", "content": prompt}
-        ]
-        text = tokenizer.apply_chat_template(
-            messages,
-            tokenize=False,
-            add_generation_prompt=True
-        )
-        model_inputs = tokenizer([text], return_tensors="pt").to(device)  # Move input tensors to the same device as the model
-        
-        # Generate response
-        with torch.cuda.amp.autocast():
-            generated_ids = model.generate(
-                model_inputs.input_ids,
-                max_new_tokens=512
-            )
-        
-        # Post-process and decode response
-        generated_ids = [
-            output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
-        ]
-        response = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
-        
+        response = get_model_response(prompt)
         context = {
             'response': response,
             'prompt': prompt
@@ -113,13 +119,8 @@ def chat(request):
     
     return render(request, 'chat.html')
 
-
-
-
 def service(request):
     return render(request, 'service.html')
 
-
 def team(request):
-    """ Renders the team template """
     return render(request, 'team.html')
