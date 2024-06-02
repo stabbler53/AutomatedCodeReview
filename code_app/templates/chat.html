@@ -49,83 +49,84 @@
 </head>
 
 <body>
-        <!-- Navbar & Hero Start -->
-        <div class="container-xxl position-relative p-0">
-            <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
-                <a href="{% url 'index' %}" class="navbar-brand p-0">
-                    <h1 class="m-0"><img src="{% static 'img/logo-removebg-preview.png' %}" alt="Logo" class="me-2">Code<span class="text-primary">Guardian</span></h1>
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                    <span class="fa fa-bars"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <div class="navbar-nav ms-auto py-0">
-                        <a href="{% url 'index' %}" class="nav-item nav-link">Home</a>
-                        <a href="{% url 'service' %}" class="nav-item nav-link">Code Review</a>
-                        <a href="{% url 'chat' %}" class="nav-item nav-link active">Code Chat</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
-                            <div class="dropdown-menu m-0">
-                                <a href="{% url 'about' %}" class="dropdown-item">About</a>
-                                <a href="{% url 'team' %}" class="dropdown-item">Our Team</a>
-                            </div>
+    <!-- Navbar & Hero Start -->
+    <div class="container-xxl position-relative p-0">
+        <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
+            <a href="{% url 'index' %}" class="navbar-brand p-0">
+                <h1 class="m-0"><img src="{% static 'img/logo-removebg-preview.png' %}" alt="Logo" class="me-2">Code<span class="text-primary">Guardian</span></h1>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="fa fa-bars"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto py-0">
+                    <a href="{% url 'index' %}" class="nav-item nav-link">Home</a>
+                    <a href="{% url 'service' %}" class="nav-item nav-link">Code Review</a>
+                    <a href="{% url 'chat' %}" class="nav-item nav-link active">Code Chat</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
+                        <div class="dropdown-menu m-0">
+                            <a href="{% url 'about' %}" class="dropdown-item">About</a>
+                            <a href="{% url 'team' %}" class="dropdown-item">Our Team</a>
                         </div>
                     </div>
                 </div>
-            </nav>
+            </div>
+        </nav>
 
-            <div class="container-xxl py-5 bg-primary hero-header mb-5">
-                <div class="row g-5 py-5">
-                    <h2 class="text-white animated zoomIn">Start chatting with your code</h2>
-                    <hr class="bg-white mx-auto mt-0" style="width: 90px;">
-                    <hr style="width: 90px;">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb justify-content-center">
-                            <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-white">Home</a></li>
-                            <li class="breadcrumb-item text-white active" aria-current="page">Code Chat</li>
-                        </ol>
-                    </nav>
-                </div>
+        <div class="container-xxl py-5 bg-primary hero-header mb-5">
+            <div class="row g-5 py-5">
+                <h2 class="text-white animated zoomIn">Start chatting with your code</h2>
+                <hr class="bg-white mx-auto mt-0" style="width: 90px;">
+                <hr style="width: 90px;">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-white">Home</a></li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">Code Chat</li>
+                    </ol>
+                </nav>
             </div>
         </div>
-        <!-- Navbar & Hero End -->
+    </div>
+    <!-- Navbar & Hero End -->
 
-            <h1 class="text-center mb-4 text-only-line">Chat here</h1>
-            <div class="card shadow-sm p-4">
-                <form method="post">
-                    {% csrf_token %}
-                    {% if response %}
-                        <div class="alert alert-success">
-                            <h4 class="alert-heading">Response:</h4>
-                            <p>{{ response }}</p>
-                        </div>
-                    {% endif %}
-                    <div class="mb-3">
-                        <label for="prompt" class="form-label">Enter your coding question:</label>
-                        <textarea name="prompt" id="prompt" class="form-control" rows="6">{{ prompt }}</textarea>
+    <div class="container">
+        <h1 class="text-center mb-4 text-only-line">Chat here</h1>
+        <div class="card shadow-sm p-4">
+            <form method="post">
+                {% csrf_token %}
+                {% if response %}
+                    <div class="alert alert-success">
+                        <h4 class="alert-heading">Response:</h4>
+                        <p>{{ response }}</p>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Submit</button>
-                    <div class="loading mt-3 mx-auto"></div>
-                </form>
-            </div>
+                {% endif %}
+                <div class="mb-3">
+                    <label for="prompt" class="form-label">Enter your coding question:</label>
+                    <textarea name="prompt" id="prompt" class="form-control" rows="6">{{ prompt }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Submit</button>
+                <div class="loading mt-3 mx-auto"></div>
+            </form>
         </div>
+    </div>
 
-        <style>
-                .text-center {
-        text-align: center;
-    }
+    <style>
+        .text-center {
+            text-align: center;
+        }
 
-    .mb-4 {
-        margin-bottom: 1rem; /* Adjust this value as needed */
-    }
+        .mb-4 {
+            margin-bottom: 1rem; /* Adjust this value as needed */
+        }
 
-    .text-only-line {
-        display: inline-block;
-        border-bottom: 1px solid rgb(255, 255, 255); /* You can change the color and style as desired */
-        padding-bottom: 0.2rem;
-        color: #ffffff; /* Adjust this value as needed */
-    }
-    body {
+        .text-only-line {
+            display: inline-block;
+            border-bottom: 1px solid rgb(255, 255, 255); /* You can change the color and style as desired */
+            padding-bottom: 0.2rem;
+            color: #ffffff; /* Adjust this value as needed */
+        }
+        body {
             background-image: url("{% static 'img/coding.jpg' %}");
             background-size: cover;
             background-repeat: no-repeat;
@@ -140,82 +141,87 @@
             /* Remove background color to see the blurred background */
             background-color: transparent !important;
         }
-    
-            .container-xxl {
-                max-width: 100%;
-                padding: 0;
+        .container-xxl {
+            max-width: 100%;
+            padding: 0;
+        }
+        .loading {
+            display: none;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
             }
-    
-            .loading {
-                display: none;
-                border: 4px solid #f3f3f3;
-                border-top: 4px solid #3498db;
-                border-radius: 50%;
-                width: 30px;
-                height: 30px;
-                animation: spin 2s linear infinite;
+            100% {
+                transform: rotate(360deg);
             }
+        }
+    </style>
     
-            @keyframes spin {
-                0% {
-                    transform: rotate(0deg);
-                }
-                100% {
-                    transform: rotate(360deg);
-                }
-            }
-        </style>
-        
-        <script>
-            document.querySelector('form').addEventListener('submit', function() {
-                document.querySelector('.loading').style.display = 'inline-block';
-            });
-        </script>
-        
-        <!-- Footer Start -->
-        <div class="container-xxl py-0">
-            <footer class="bg-dark text-light">
-                <div class="container py-5">
-                    <div class="row g-5">
-                        <div class="col-md-6 col-lg-4">
-                            <h2 class="fw-bold mb-4 text-light">Code Guardian</h2>
-                            <p>The most efficient and effective tool to find security flaws in your code.</p>
-                            <div class="d-flex pt-2">
-                                <a class="btn btn-lg btn-light btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-lg btn-light btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-lg btn-light btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                                <a class="btn btn-lg btn-light btn-lg-square rounded-circle" href="#"><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4">
-                            <h2 class="fw-bold mb-4 text-light">Links</h2>
-                            <ul class="list-unstyled">
-                                <li><a href="{% url 'index' %}" class="text-light">Home</a></li>
-                                <li><a href="{% url 'service' %}" class="text-light">Code Review</a></li>
-                                <li><a href="{% url 'chat' %}" class="text-light">Code Chat</a></li>
-                                <li><a href="{% url 'about' %}" class="text-light">About</a></li>
-                                <li><a href="{% url 'team' %}" class="text-light">Our Team</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6 col-lg-4">
-                            <h2 class="fw-bold mb-4 text-light">Contact</h2>
-                            <p><i class="fa fa-map-marker-alt me-3"></i>Uia, Gombak, Malaysia</p>
-                            <p><i class="fa fa-phone-alt me-3"></i>01139977924</p>
-                            <p><i class="fa fa-envelope me-3"></i>mamr8844@gmail.com</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="container">
-                    <div class="copyright text-center text-light">
-                        &copy; <a class="border-bottom text-light" href="#">Code Guardian 2024</a>
-                    </div>
-                </div>
-            </footer>
-        </div>
-        <!-- Footer End -->
+    <script>
+        document.querySelector('form').addEventListener('submit', function() {
+            document.querySelector('.loading').style.display = 'inline-block';
+        });
 
-        <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top pt-2"><i class="bi bi-arrow-up"></i></a>
+        document.querySelector('#prompt').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                document.querySelector('.loading').style.display = 'inline-block';
+                this.form.submit();
+            }
+        });
+    </script>
+    
+    <!-- Footer Start -->
+    <div class="container-xxl py-0">
+        <footer class="bg-dark text-light">
+            <div class="container py-5">
+                <div class="row g-5">
+                    <div class="col-md-6 col-lg-4">
+                        <h2 class="fw-bold mb-4 text-light">Code Guardian</h2>
+                        <p>The most efficient and effective tool to find security flaws in your code.</p>
+                        <div class="d-flex pt-2">
+                            <a class="btn btn-lg btn-light btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-lg btn-light btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-lg btn-light btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a class="btn btn-lg btn-light btn-lg-square rounded-circle" href="#"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <h2 class="fw-bold mb-4 text-light">Links</h2>
+                        <ul class="list-unstyled">
+                            <li><a href="{% url 'index' %}" class="text-light">Home</a></li>
+                            <li><a href="{% url 'service' %}" class="text-light">Code Review</a></li>
+                            <li><a href="{% url 'chat' %}" class="text-light">Code Chat</a></li>
+                            <li><a href="{% url 'about' %}" class="text-light">About</a></li>
+                            <li><a href="{% url 'team' %}" class="text-light">Our Team</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <h2 class="fw-bold mb-4 text-light">Contact</h2>
+                        <p><i class="fa fa-map-marker-alt me-3"></i>Uia, Gombak, Malaysia</p>
+                        <p><i class="fa fa-phone-alt me-3"></i>01139977924</p>
+                        <p><i class="fa fa-envelope me-3"></i>mamr8844@gmail.com</p>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="copyright text-center text-light">
+                    &copy; <a class="border-bottom text-light" href="#">Code Guardian 2024</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top pt-2"><i class="bi bi-arrow-up"></i></a>
     </div>
 
     <!-- JavaScript Libraries -->
