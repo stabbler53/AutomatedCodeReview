@@ -37,10 +37,9 @@ def handle_uploaded_file(uploaded_file):
             logging.error(f"Error deleting file: {e}")
     return code
 
-def get_model_response(prompt):
+def get_model_response(prompt, history):
     try:
-        messages = [
-            {"role": "system", "content": "You are a helpful assistant integrated into a site called CodeGuardian which helps users reviewing their code."},
+        messages = history + [
             {"role": "user", "content": prompt}
         ]
         text = tokenizer.apply_chat_template(
@@ -48,7 +47,7 @@ def get_model_response(prompt):
             tokenize=False,
             add_generation_prompt=True
         )
-        model_inputs = tokenizer([text], return_tensors="pt").to(device)  # Move input tensors to the same device as the model
+        model_inputs = tokenizer([text], return_tensors="pt").to(device)
         with torch.cuda.amp.autocast():
             generated_ids = model.generate(
                 model_inputs.input_ids,
@@ -62,6 +61,46 @@ def get_model_response(prompt):
     except Exception as e:
         logging.error(f"Error generating model response: {e}")
         return "An error occurred while generating the response."
+
+def chat(request):
+    if request.method == 'POST':
+        prompt = request.POST.get('prompt')
+        history = request.session.get('history', [])
+        response = get_model_response(prompt, history)
+        history.append({"role": "user", "content": prompt})
+        history.append({"role": "assistant", "content": response})
+        request.session['history'] = history
+        context = {
+            'history': history,
+            'prompt': ''
+        }
+        return render(request, 'chat.html', context)
+    
+    return render(request, 'chat.html', {'history': request.session.get('history', []), 'prompt': ''})
+
+def handle_uploaded_file(uploaded_file):
+    file_path = default_storage.save(uploaded_file.name, ContentFile(uploaded_file.read()))
+    file_full_path = os.path.join(default_storage.location, file_path)
+    try:
+        with open(file_full_path, 'r') as file:
+            code = file.read()
+    except Exception as e:
+        logging.error(f"Error reading uploaded file: {e}")
+        raise
+    finally:
+        try:
+            default_storage.delete(file_path)
+        except Exception as e:
+            logging.error(f"Error deleting file: {e}")
+    return code
+
+@csrf_exempt
+def clear_history(request):
+    if request.method == 'POST':
+        if 'history' in request.session:
+            del request.session['history']
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)
 
 def index(request):
     return render(request, 'index.html')
@@ -107,17 +146,6 @@ def analyze_code_view(request):
 def about(request):
     return render(request, 'about.html')
 
-def chat(request):
-    if request.method == 'POST':
-        prompt = request.POST.get('prompt')
-        response = get_model_response(prompt)
-        context = {
-            'response': response,
-            'prompt': prompt
-        }
-        return render(request, 'chat.html', context)
-    
-    return render(request, 'chat.html')
 
 def service(request):
     return render(request, 'service.html')

@@ -39,21 +39,71 @@
             margin: 0;
             width: 100%;
             overflow-x: hidden;
-            background-color: #f2f2f2;
         }
+
         .container-xxl {
             max-width: 100%;
             padding: 0;
+        }
+
+        .chat-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .user-message {
+            background-color: #a1f1ff;
+            text-align: left;
+        }
+
+        .assistant-message {
+            background-color: #c6ff94;
+            text-align: right;
+        }
+
+        .loading {
+            display: none;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
 
 <body>
-    <!-- Navbar & Hero Start -->
+    <!-- Navbar Start -->
     <div class="container-xxl position-relative p-0">
         <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
             <a href="{% url 'index' %}" class="navbar-brand p-0">
-                <h1 class="m-0"><img src="{% static 'img/logo-removebg-preview.png' %}" alt="Logo" class="me-2">Code<span class="text-primary">Guardian</span></h1>
+                <h1><img src="{% static 'img/logo-removebg-preview.png' %}" alt="Logo">Code<span class="text-primary">Guardian</span></h1>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="fa fa-bars"></span>
@@ -73,78 +123,93 @@
                 </div>
             </div>
         </nav>
-
-        <div class="container-xxl py-5 bg-primary hero-header mb-5">
+        <div class="container-xxl py-5 bg-primary hero-header mb-0">
             <div class="row g-5 py-5">
-                <h2 class="text-white animated zoomIn">Start chatting with your code</h2>
-                <hr class="bg-white mx-auto mt-0" style="width: 90px;">
                 <hr style="width: 90px;">
                 <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb justify-content-center">
-                        <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-white">Home</a></li>
-                        <li class="breadcrumb-item text-white active" aria-current="page">Code Chat</li>
-                    </ol>
+                    <div class="row g-5 py-5">
+                        <nav aria-label="breadcrumb">
+                        </nav>
+                    </div>
                 </nav>
             </div>
         </div>
     </div>
-    <!-- Navbar & Hero End -->
+    <!-- Navbar End -->
 
-    <div class="container">
-        <h1 class="text-center mb-4 text-only-line">Chat here</h1>
-        <div class="card shadow-sm p-4">
-            <form method="post">
-                {% csrf_token %}
-                {% if response %}
-                    <div class="alert alert-success">
-                        <h4 class="alert-heading">Response:</h4>
-                        <p>{{ response }}</p>
+    <!-- Intro Chat Start -->
+    <div class="container-xxl py-5" style="background-color: #fff;">
+        <div class="container px-lg-5">
+            <div class="row g-5">
+                <div class="col-lg-6 offset-lg-3 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="section-title position-relative mb-4 pb-2">
+                        <h2 class="text-center mt-2">Chat with Code Guardian</h2>
+                        <p class="text-center mt-2">
+                            Code Guardian provides intelligent feedback, personalized recommendations, and real-time guidance to help you improve your code quality and development practices.
+                        </p>
                     </div>
-                {% endif %}
-                <div class="mb-3">
-                    <label for="prompt" class="form-label">Enter your coding question:</label>
-                    <textarea name="prompt" id="prompt" class="form-control" rows="6">{{ prompt }}</textarea>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Submit</button>
-                <div class="loading mt-3 mx-auto"></div>
-            </form>
+            </div>
         </div>
     </div>
+    <!-- Intro Chat End -->
+
+    <!-- Chat Section Start -->
+    <div class="container-xxl py-5">
+        <div class="container px-lg-5">
+            <div class="row g-5">
+                <div class="col-lg-20 offset-lg-20">
+                    <div class="card shadow-sm p-4">
+                        <div class="chat-container mb-4">
+                            {% for message in history %}
+                                <div class="message {% if message.role == 'user' %}user-message{% else %}assistant-message{% endif %}">
+                                    <strong>{{ message.role|capfirst }}:</strong> {{ message.content }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="prompt" class="form-label">Enter your coding question:</label>
+                                <textarea name="prompt" id="prompt" class="form-control" style="width: 100%;" rows="6">{{ prompt }}</textarea>
+
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <button type="submit" class="btn btn-primary w-100 me-2">Submit</button>
+                                <button type="button" class="btn btn-secondary w-100" id="clear-button">Clear</button>
+                            </div>
+                            <div class="loading mt-3 mx-auto"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Chat Section End -->
 
     <style>
+
+        
         .text-center {
             text-align: center;
         }
 
         .mb-4 {
-            margin-bottom: 1rem; /* Adjust this value as needed */
+            margin-bottom: 1rem;
         }
 
         .text-only-line {
             display: inline-block;
-            border-bottom: 1px solid rgb(255, 255, 255); /* You can change the color and style as desired */
+            border-bottom: 1px solid rgb(255, 255, 255);
             padding-bottom: 0.2rem;
-            color: #ffffff; /* Adjust this value as needed */
+            color: #ffffff;
         }
-        body {
-            background-image: url("{% static 'img/coding.jpg' %}");
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            height: 100%;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-        }
-        .hero-header {
-            /* Remove background color to see the blurred background */
-            background-color: transparent !important;
-        }
+
         .container-xxl {
             max-width: 100%;
             padding: 0;
         }
+
         .loading {
             display: none;
             border: 4px solid #f3f3f3;
@@ -154,6 +219,7 @@
             height: 30px;
             animation: spin 2s linear infinite;
         }
+
         @keyframes spin {
             0% {
                 transform: rotate(0deg);
@@ -163,66 +229,81 @@
             }
         }
     </style>
-    
+
     <script>
-        document.querySelector('form').addEventListener('submit', function() {
+        document.querySelector('form').addEventListener('submit', function(event) {
             document.querySelector('.loading').style.display = 'inline-block';
         });
 
         document.querySelector('#prompt').addEventListener('keydown', function(event) {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
-                document.querySelector('.loading').style.display = 'inline-block';
-                this.form.submit();
+                document.querySelector('form').submit();
             }
         });
+
+        document.querySelector('#clear-button').addEventListener('click', function() {
+            fetch("{% url 'clear_history' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                }
+            });
+        });
     </script>
-    
+
+    <!-- Testimonial Start -->
+    <div class="container-xxl my-5 py-5">
+        <div class="text-center w-75 mx-auto mb-4">
+            <h2 class="mb-3">Testimonials</h2>
+            <p class="text-muted mb-4">What our clients say about us.</p>
+        </div>
+        <div class="owl-carousel testimonial-carousel">
+            <div class="bg-light rounded p-4">
+                <i class="bi bi-quote-left-fill text-primary fs-2"></i>
+                <p class="text-muted mb-3">Our code review service is awesome! It really helped me identify and fix errors in my code.</p>
+                <div class="d-flex align-items-center">
+                    <img class="img-fluid rounded-circle" src="{% static 'img/testimonial-1.jpg' %}" style="width: 50px; height: 50px;">
+                    <div class="ms-3">
+                        <h5 class="mb-1">Mohamed Rashad</h5>
+                        <p class="text-muted">Data Scientist</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-light rounded p-4">
+                <i class="bi bi-quote-left-fill text-primary fs-2"></i>
+                <p class="text-muted mb-3">I love the code review service! It's so easy to use and it really helps me improve my code quality.</p>
+                <div class="d-flex align-items-center">
+                    <img class="img-fluid rounded-circle" src="{% static 'img/team-2.jpg' %}" style="width: 50px; height: 50px;">
+                    <div class="ms-3">
+                        <h5 class="mb-1">Miad binti Wan Mahri</h5>
+                        <p class="text-muted">Software Engineer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Testimonial End -->
+
     <!-- Footer Start -->
-    <div class="container-xxl py-0">
-        <footer class="bg-dark text-light">
-            <div class="container py-5">
-                <div class="row g-5">
-                    <div class="col-md-6 col-lg-4">
-                        <h2 class="fw-bold mb-4 text-light">Code Guardian</h2>
-                        <p>The most efficient and effective tool to find security flaws in your code.</p>
-                        <div class="d-flex pt-2">
-                            <a class="btn btn-lg btn-light btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-lg btn-light btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-lg btn-light btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                            <a class="btn btn-lg btn-light btn-lg-square rounded-circle" href="#"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <h2 class="fw-bold mb-4 text-light">Links</h2>
-                        <ul class="list-unstyled">
-                            <li><a href="{% url 'index' %}" class="text-light">Home</a></li>
-                            <li><a href="{% url 'service' %}" class="text-light">Code Review</a></li>
-                            <li><a href="{% url 'chat' %}" class="text-light">Code Chat</a></li>
-                            <li><a href="{% url 'about' %}" class="text-light">About</a></li>
-                            <li><a href="{% url 'team' %}" class="text-light">Our Team</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <h2 class="fw-bold mb-4 text-light">Contact</h2>
-                        <p><i class="fa fa-map-marker-alt me-3"></i>Uia, Gombak, Malaysia</p>
-                        <p><i class="fa fa-phone-alt me-3"></i>01139977924</p>
-                        <p><i class="fa fa-envelope me-3"></i>mamr8844@gmail.com</p>
-                    </div>
+    <div class="container-fluid bg-primary text-light footer mt-5 pt-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-5 px-lg-5">
+            <div class="row g-5">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    &copy; <a class="border-bottom" href="{% url 'index' %}">Code Guardian 2024</a>
                 </div>
             </div>
-            <div class="container">
-                <div class="copyright text-center text-light">
-                    &copy; <a class="border-bottom text-light" href="#">Code Guardian 2024</a>
-                </div>
-            </div>
-        </footer>
+        </div>
     </div>
     <!-- Footer End -->
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top pt-2"><i class="bi bi-arrow-up"></i></a>
-    </div>
 
     <!-- JavaScript Libraries -->
     <script src="{% static 'lib/jquery/jquery-3.7.1.js' %}"></script>

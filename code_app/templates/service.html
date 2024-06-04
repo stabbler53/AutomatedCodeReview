@@ -4,6 +4,7 @@
 
 <head>
     <meta charset="utf-8">
+    <title>Code Guardian - Automated Code Review System</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -31,8 +32,13 @@
     <!-- Template Stylesheet -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
+    <!-- CodeMirror Stylesheet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css">
+
     <style>
-        body, html {
+        body,
+        html {
             padding: 0;
             margin: 0;
             width: 100%;
@@ -43,21 +49,83 @@
             max-width: 100%;
             padding: 0;
         }
+
+        .code-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            overflow: hidden;
+            font-family: monospace;
+            line-height: 20px;
+            box-sizing: border-box;
+        }
+
+        .CodeMirror {
+            height: 100%;
+        }
+
+        .code-wrapper {
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+        }
+
+        .dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .code-wrapper {
+            border-color: #333;
+        }
+
+        .dark-mode .container-xxl,
+        .dark-mode .navbar,
+        .dark-mode .bg-primary {
+            background-color: #333 !important;
+        }
+
+        .dark-mode .text-primary,
+        .dark-mode .text-white {
+            color: #e0e0e0 !important;
+        }
+
+        .dark-mode .btn-primary {
+            background-color: #555;
+            border-color: #555;
+        }
+
+        .dark-mode .form-control {
+            background-color: #444;
+            color: #e0e0e0;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: inherit;
+        }
+
+        .code-toggle-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 
 <body>
-    <div class="container-xxl bg-white p-0">
+    <!-- Navbar Start -->
 
+    <div class="container-xxl bg-white p-0">
         <!-- Spinner Start -->
-        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-grow text-primary" style="width: 15rem; height: 5rem;" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center"></div>
         <!-- Spinner End -->
 
-        <!-- Navbar & Hero Start -->
+        <!-- Navbar Start -->
         <div class="container-xxl position-relative p-0">
             <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
                 <a href="{% url 'index' %}" class="navbar-brand p-0">
@@ -79,196 +147,280 @@
                             </div>
                         </div>
                     </div>
+                    <button id="toggleDarkMode" class="toggle-btn">
+                        <i class="bi bi-moon"></i>
+                    </button>
                 </div>
             </nav>
-
-            <!-- Hero Start -->
-            <div class="bg-primary p-5 mt-8">
-                <div class="container-xxl p-0">
-                    <br><h2 class="text-white mb-4">Automated Code Review System</h2></br>
-                    <p class="text-white-50 mb-4">We are an automated code review system that checks your code quality for free.</p>
-                    <a href="{% url 'chat' %}" class="btn btn-light px-4">Chat with your code with CodeQwen-7B-chat model</a>
-                </div>
-            </div>
-            <!-- Hero End -->
-        </div>
-        <!-- Navbar & Hero End -->
-
-        <div class="container my-5 p-4 shadow rounded">
-            <h2 class="text-center mb-4">Analyze Code</h2>
-            <form method="post" action="{% url 'analyze' %}" class="needs-validation" enctype="multipart/form-data" novalidate>
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="code">Enter your code:</label>
-                    <textarea class="form-control" id="code" name="code" rows="10" required></textarea>
-                    <div class="invalid-feedback">
-                        Please enter your code.
-                    </div>
-                </div>
-                <div class="form-group mt-3">
-                    <label for="file">Upload a Python file:</label>
-                    <input type="file" class="form-control" id="file" name="file" accept=".py" required>
-                    <div class="invalid-feedback">
-                        Please upload a Python file.
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary mt-3">Analyze Code</button>
-            </form>
-        </div>
-
-        <div class="container my-5 p-4 shadow rounded">
-            <h2 class="text-center mb-4">Analysis Results</h2>
-            {% if findings %}
-                {% for finding in findings %}
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <h5 class="card-title">Function: {{ finding.function_name }}</h5>
+            <div class="container-xxl py-5 bg-primary hero-header mb-0">
+                <div class="row g-5 py-5">
+                    <!--<h2 class="text-white animated zoomIn">Start code review analysis</h2> !-->
+                    <hr style="width: 90px;">
+                    <hr style="width: 90px;">
+                    <nav aria-label="breadcrumb">
+                        <div class="row g-5 py-5">
+                            <!--<h2 class="text-white animated zoomIn">Start code review analysis</h2> !-->
+                            <nav aria-label="breadcrumb">
+                            </nav>
                         </div>
-                        <div class="card-body">
-                            <p class="card-text">Start Point: {{ finding.start_point }}</p>
-                            <h6>Issues:</h6>
-                            <ul>
-                                {% for issue in finding.issues %}
-                                    <li>{{ issue }}</li>
-                                {% endfor %}
-                            </ul>
-                            <h6>Control Flow Statements:</h6>
-                            <p class="card-text">{{ finding.control_flow|join:", " }}</p>
-                            <h6>Data Dependencies:</h6>
-                            <p class="card-text">{{ finding.data_dependencies|join:", " }}</p>
-                        </div>
-                    </div>
-                {% endfor %}
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Code Quality Summary:</h5>
-                        <p class="card-text">Total Functions: {{ quality.total_functions }}</p>
-                        <p class="card-text">Total Issues: {{ quality.total_issues }}</p>
-                        <p class="card-text">Quality Score: {{ quality.quality_score }}</p>
-                    </div>
-                </div>
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Feedback:</h5>
-                        <ul>
-                            {% for line in feedback %}
-                                <li>{{ line }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            {% endif %}
-        </div>
-
-        <!-- Service Start -->
-        <div class="container-xxl my-5 py-5">
-            <div class="text-center w-75 mx-auto mb-4">
-                <h2 class="mb-3">Our Code Review Service</h2>
-                <p class="text-muted mb-4">Our code review service can automatically review your code quality.</p>
-            </div>
-            <div class="row g-4">
-                <div class="col-lg-4">
-                    <div class="bg-light rounded p-4">
-                        <div class="d-flex mb-3">
-                            <i class="bi bi-code-slash fs-2 text-primary"></i>
-                            <div class="ms-3">
-                                <h5 class="mb-1">Code Quality Check</h5>
-                                <p class="text-muted mb-0">Our code review system checks your code quality by identifying potential bugs and errors.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="bg-light rounded p-4">
-                        <div class="d-flex mb-3">
-                            <i class="bi bi-bar-chart-steps fs-2                             text-primary"></i>
-                            <div class="ms-3">
-                                <h5 class="mb-1">Code Performance Analysis</h5>
-                                <p class="text-muted mb-0">Our code review system analyzes the performance of your code by checking for bottlenecks and slow operations.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="bg-light rounded p-4">
-                        <div class="d-flex mb-3">
-                            <i class="bi bi-bookmarks fs-2 text-primary"></i>
-                            <div class="ms-3">
-                                <h5 class="mb-1">Code Documentation</h5>
-                                <p class="text-muted mb-0">Our code review system also checks if your code has proper documentation to ensure smooth maintenance.</p>
-                            </div>
-                        </div>
-                    </div>
+                    </nav>
                 </div>
             </div>
         </div>
-        <!-- Service End -->
+    </div>
+    <!-- Navbar End -->
 
-        <!-- Testimonial Start -->
-        <div class="container-xxl my-5 py-5">
-            <div class="text-center w-75 mx-auto mb-4">
-                <h2 class="mb-3">Testimonials</h2>
-                <p class="text-muted mb-4">What our clients say about us.</p>
-            </div>
-            <div class="owl-carousel testimonial-carousel">
-                <div class="bg-light rounded p-4">
-                    <i class="bi bi-quote-left-fill text-primary fs-2"></i>
-                    <p class="text-muted mb-3">Our code review service is awesome! It really helped me identify and fix errors in my code.</p>
-                    <div class="d-flex align-items-center">
-                        <img class="img-fluid rounded-circle" src="{% static 'img/testimonial-1.jpg' %}" style="width: 50px; height: 50px;">
+    <!-- Service Start -->
+    <div class="container-xxl my-0 py-5" style="background-color: #ffffff;">
+        <div class="text-center w-75 mx-auto mb-4">
+            <h2 class="mb-3">Our Code Review Service</h2>
+            <p class="text-muted mb-4">Our code review service can automatically review your code quality.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="bg-white rounded p-4">
+                    <div class="d-flex mb-3">
+                        <i class="bi bi-code-slash fs-2 text-primary"></i>
                         <div class="ms-3">
-                            <h5 class="mb-1">Mohamed Rashad</h5>
-                            <p class="text-muted">Data Scientist</p>
+                            <h5 class="mb-1">Code Quality Check</h5>
+                            <p class="text-muted mb-0">Our code review system checks your code quality by identifying potential bugs and errors.</p>
                         </div>
                     </div>
                 </div>
-                <div class="bg-light rounded p-4">
-                    <i class="bi bi-quote-left-fill text-primary fs-2"></i>
-                    <p class="text-muted mb-3">I love the code review service! It's so easy to use and it really helps me improve my code quality.</p>
-                    <div class="d-flex align-items-center">
-                        <img class="img-fluid rounded-circle" src="{% static 'img/testimonial-2.jpg' %}" style="width: 50px; height: 50px;">
+            </div>
+            <div class="col-lg-4">
+                <div class="bg-white rounded p-4">
+                    <div class="d-flex mb-3">
+                        <i class="bi bi-bar-chart-steps fs-2 text-primary"></i>
                         <div class="ms-3">
-                            <h5 class="mb-1">Miad binti Wan Mahri</h5>
-                            <p class="text-muted">Web Developer</p>
+                            <h5 class="mb-1">Code Performance Analysis</h5>
+                            <p class="text-muted mb-0">Our code review system analyzes the performance of your code by checking for bottlenecks and slow operations.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="bg-white rounded p-4">
+                    <div class="d-flex mb-3">
+                        <i class="bi bi-bookmarks fs-2 text-primary"></i>
+                        <div class="ms-3">
+                            <h5 class="mb-1">Code Documentation</h5>
+                            <p class="text-muted mb-0">Our code review system also checks if your code has proper documentation to ensure smooth maintenance.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Testimonial End -->
+    </div>
+    <!-- Service End -->
 
-        <!-- Footer Start -->
-        <div class="container-fluid bg-primary text-light footer mt-5 pt-5 wow fadeIn" data-wow-delay="0.1s">
-            <div class="container py-5 px-lg-5">
-                <div class="row g-5">
-                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        &copy; <a class="border-bottom" href="{% url 'index' %}">Code Guardian 2024</a>
-                    </div>
+    <div class="container my-5 p-4 shadow rounded">
+        <h2 class="text-center mb-4">Analyze Code</h2>
+        <div class="code-toggle-container">
+            <button id="toggleCodeDarkMode" class="toggle-btn">
+                <i class="bi bi-moon"></i>
+            </button>
+        </div>
+        <form method="post" action="{% url 'analyze' %}" class="needs-validation" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="code">Enter your Python code:</label>
+                <div class="code-wrapper">
+                    <textarea class="form-control" id="code" name="code" required></textarea>
+                </div>
+                <div class="invalid-feedback">
+                    Please enter your code.
                 </div>
             </div>
-        </div>
-        <!-- Footer End -->
-
-        <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top pt-2"><i class="bi bi-arrow-up"></i></a>
+            <div class="form-group mt-3">
+                <label for="file">Upload a Python file:</label>
+                <input type="file" class="form-control" id="file" name="file" accept=".py" required>
+                <div class="invalid-feedback">
+                    Please upload a Python file.
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Analyze Code</button>
+        </form>
     </div>
 
+    <div class="container my-5 p-4 shadow rounded">
+        <h2 class="text-center mb-4">Analysis Results</h2>
+        {% if findings %}
+            {% for finding in findings %}
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="card-title">Function: {{ finding.function_name }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Start Point: {{ finding.start_point }}</p>
+                        <h6>Issues:</h6>
+                        <ul>
+                            {% for issue in finding.issues %}
+                                <li>{{ issue }}</li>
+                            {% endfor %}
+                        </ul>
+                        <h6>Control Flow Statements:</h6>
+                        <p class="card-text">{{ finding.control_flow|join:", " }}</p>
+                        <h6>Data Dependencies:</h6>
+                        <p class="card-text">{{ finding.data_dependencies|join:", " }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Code Quality Summary:</h5>
+                    <p class="card-text">Total Functions: {{ quality.total_functions }}</p>
+                    <p class="card-text">Total Issues: {{ quality.total_issues }}</p>
+                    <p class="card-text">Quality Score: {{ quality.quality_score }}</p>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Feedback:</h5>
+                    <ul>
+                        {% for line in feedback %}
+                            <li>{{ line }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Chat recommend Start -->
+    <div class="bg-primary p-5 mt-8">
+        <div class="container-xxl p-0">
+            <br><h2 class="text-white mb-4">Automated Code Review System</h2></br>
+            <p class="text-white-50 mb-4">We are an automated code review system that checks your code quality for free.</p>
+            <a href="{% url 'chat' %}" class="btn btn-light px-4">Chat with your code with CodeQwen-7B-chat model</a>
+        </div>
+    </div>
+    <!-- Chat recommend End -->
+
+    <!-- Testimonial Start -->
+    <div class="container-xxl my-5 py-5">
+        <div class="text-center w-75 mx-auto mb-4">
+            <h2 class="mb-3">Testimonials</h2>
+            <p class="text-muted mb-4">What our clients say about us.</p>
+        </div>
+        <div class="owl-carousel testimonial-carousel">
+            <div class="bg-light rounded p-4">
+                <i class="bi bi-quote-left-fill text-primary fs-2"></i>
+                <p class="text-muted mb-3">Our code review service is awesome! It really helped me identify and fix errors in my code.</p>
+                <div class="d-flex align-items-center">
+                    <img class="img-fluid rounded-circle" src="{% static 'img/testimonial-1.jpg' %}" style="width: 50px; height: 50px;">
+                    <div class="ms-3">
+                        <h5 class="mb-1">Mohamed Rashad</h5>
+                        <p class="text-muted">Data Scientist</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-light rounded p-4">
+                <i class="bi bi-quote-left-fill text-primary fs-2"></i>
+                <p class="text-muted mb-3">I love the code review service! It's so easy to use and it really helps me improve my code quality.</p>
+                <div class="d-flex align-items-center">
+                    <img class="img-fluid rounded-circle" src="{% static 'img/team-2.jpg' %}" style="width: 50px; height: 50px;">
+                    <div class="ms-3">
+                        <h5 class="mb-1">Miad binti Wan Mahri</h5>
+                        <p class="text-muted">Software Engineer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Testimonial End -->
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-primary text-light footer mt-5 pt-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-5 px-lg-5">
+            <div class="row g-5">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    &copy; <a class="border-bottom" href="{% url 'index' %}">Code Guardian 2024</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top pt-2"><i class="bi bi-arrow-up"></i></a>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/closetag.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/selection/active-line.min.js"></script>
+
     <script>
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                const contents = e.target.result;
-                document.getElementById('code').value = contents;
-            };
-
-            reader.readAsText(file);
-        }
-
-        window.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const fileInput = document.getElementById('file');
+            const codeInput = document.getElementById('code');
+
+            const editor = CodeMirror.fromTextArea(codeInput, {
+                mode: "python",
+                theme: "default",
+                lineNumbers: true,
+                matchBrackets: true,
+                autoCloseTags: true,
+                styleActiveLine: true,
+            });
+
+            function handleFileSelect(event) {
+                const file = event.target.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const contents = e.target.result;
+                    editor.setValue(contents);
+                };
+
+                reader.readAsText(file);
+            }
+
             fileInput.addEventListener('change', handleFileSelect);
+
+            // Form validation
+            const forms = document.getElementsByClassName('needs-validation');
+            Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+
+            // Disable one input when the other is filled
+            editor.on('change', function () {
+                fileInput.disabled = !!editor.getValue();
+            });
+
+            fileInput.addEventListener('input', function () {
+                editor.setOption("readOnly", !!fileInput.value);
+            });
+
+            // Dark Mode Toggle for the entire page
+            const toggleDarkMode = document.getElementById('toggleDarkMode');
+            toggleDarkMode.addEventListener('click', function () {
+                document.body.classList.toggle('dark-mode');
+                const icon = toggleDarkMode.querySelector('i');
+                icon.classList.toggle('bi-moon');
+                icon.classList.toggle('bi-sun');
+            });
+
+            // Dark Mode Toggle for CodeMirror
+            const toggleCodeDarkMode = document.getElementById('toggleCodeDarkMode');
+            toggleCodeDarkMode.addEventListener('click', function () {
+                if (editor.getOption('theme') === 'default') {
+                    editor.setOption('theme', 'dracula');
+                } else {
+                    editor.setOption('theme', 'default');
+                }
+                const icon = toggleCodeDarkMode.querySelector('i');
+                icon.classList.toggle('bi-moon');
+                icon.classList.toggle('bi-sun');
+            });
         });
     </script>
 
@@ -286,40 +438,11 @@
     <script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'js/code_analysis.js' %}"></script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Fade out the spinner after the page is loaded
             $('#spinner').fadeOut('slow');
-
-            (function() {
-                'use strict';
-                window.addEventListener('load', function() {
-                    var forms = document.getElementsByClassName('needs-validation');
-                    var validation = Array.prototype.filter.call(forms, function(form) {
-                        form.addEventListener('submit', function(event) {
-                            if (form.checkValidity() === false) {
-                                event.preventDefault();
-                                event.stopPropagation();
-                            }
-                            form.classList.add('was-validated');
-                        }, false);
-                    });
-                }, false);
-
-                // Disable one input when the other is filled
-                var codeInput = document.getElementById('code');
-                var fileInput = document.getElementById('file');
-
-                codeInput.addEventListener('input', function() {
-                    fileInput.disabled = !!codeInput.value;
-                });
-
-                fileInput.addEventListener('input', function() {
-                    codeInput.disabled = !!fileInput.value;
-                });
-            })();
         });
     </script>
 </body>
 
 </html>
-

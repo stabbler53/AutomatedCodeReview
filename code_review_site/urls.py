@@ -30,6 +30,7 @@ application = ProtocolTypeRouter({
 urlpatterns = [
     path('', views.index, name='index'),
     path('service/', views.service, name='service'),
+    path('clear-history/', views.clear_history, name='clear_history'),
     path('analyze_code/', views.analyze_code, name='code_analysis'),
     path('about/', views.about, name='about'),
     path('chat/', views.chat, name='chat'),
